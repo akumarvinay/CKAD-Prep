@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+ name: readiness-pod
+ namespace: default
+ labels:
+   app: observaility
+spec:
+ containers:
+ - name: nginx
+   image: nginx
+   ports:
+    - containerPort: 80
+   readinessProbe:
+    httpGet:
+     port: 80
+     path: /
+    initialDelaySeconds: 10
+    periodSeconds: 3
+

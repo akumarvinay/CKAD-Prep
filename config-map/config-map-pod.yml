@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+ name: sample-pod
+ labels:
+  app: busybox
+spec:
+ containers:
+ - name: busy
+   image: busybox
+   command: ['sh', '-c', 'echo Hello World $(MESSAGE) && sleep 3600']
+   env:
+   - name: MESSAGE
+     valueFrom:
+      configMapKeyRef:
+         name: my-config-map
+         key: message

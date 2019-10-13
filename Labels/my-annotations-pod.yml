@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+ name: my-annotations-pod
+ labels:
+   app: my-app
+ annotations:
+   name: vinaykumar
+   owner-email-id: vinaykumar.devops@hotmail.com
+   git-commit-id: asd1238
+spec:
+ containers:
+ - name: nginx
+   image: nginx

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+ name: my-pv
+spec:
+ storageClass: local-storage-vol
+ accessMode: ReadWriteOnce
+ capacity: "1Gi"
+ hostPath:
+   path: /mnt/storage

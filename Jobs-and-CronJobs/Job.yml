@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+ name: sample-job
+spec:
+ backoffLimit: 3   # backoffLimit specifies the number of re-tries before job controller gives up/Declares Job as failure
+ template:
+  spec:
+   containers:
+   - name: sample-job-container
+     image: perl
+     command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"]
+   restartPolicy: Never

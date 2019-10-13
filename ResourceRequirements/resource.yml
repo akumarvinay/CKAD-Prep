@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata: 
+ name: resource-limits
+ labels:
+  app: res-limt
+ namespace: default
+spec:
+ containers:
+ - name: sample
+   image: busybox
+   command: ['sh', '-c', 'echo Hello world && sleep 300']
+   resources:
+     requests:
+      memory: "64Mi"
+      cpu: "250m"
+     limits:
+      memory: "128Mi"
+      cpu: "500m"

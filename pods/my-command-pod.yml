@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+ name: my-command-pod
+ labels:
+   app: busybox
+ namespace: my-ns
+spec:
+ containers:
+ - name: my-cont
+   image: busybox
+   command: ['echo']
+   args: ['Hello']
+ restartPolicy: Never

@@ -1,0 +1,12 @@
+Create the pod:
+
+kubectl apply -f /usr/ckad/adapter-pod.yml
+Verify that the pod starts up:
+
+kubectl get pod counter
+You can also verify that everything is working by checking the output directory on the worker node. Log in to the worker from the master:
+
+ssh cloud_user@<IP ADDRESS>
+Look for the fluentd output files in the output directory:
+
+ls /usr/ckad/log_output

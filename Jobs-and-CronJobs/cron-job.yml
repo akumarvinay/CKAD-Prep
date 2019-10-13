@@ -1,0 +1,18 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+ name: my-cron-job
+spec:
+ schedule: "*/1 * * * *"
+ jobTemplate:       # This is CronJobs template section , which holds job template section
+   spec:
+    template:       # This is Job's template section
+      spec:
+       containers:
+       - name: sample-cron-job
+         image: busybox
+         args:
+         - "sh"
+         - "-c"
+         - "date; echo Hello Kubernetes cluster"
+       restartPolicy: Never

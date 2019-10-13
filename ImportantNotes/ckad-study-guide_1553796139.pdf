@@ -1,0 +1,85 @@
+<html>
+    <head>
+		<link href="/lib/cache/9efd5af293763dead0f0cff61dbc63c7.css?ver=1570745089" rel="stylesheet" media="screen" />		
+		<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+		
+		<script src="/lib/cache/3fa064f2b2ae610ab0c2bba3163db68d.js?ver=1570630630"></script><script src="/lib/cache/fdabc1afb4967e0f4ac2930b9f5f7397.js?ver=1570630630"></script>    </head>
+    <body>
+        <div class="container">
+            <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+            </svg>
+            <h1>Logging In ... </h1>
+        </div>
+        <script>
+            var ssoConfig = {"domain":"login.linuxacademy.com","clientID":"KaWxNn1C2Gc7n83W9OFeXltd8Utb5vvx","redirectUri":"https:\/\/linuxacademy.com\/cp\/ssologin","audience":"https:\/\/linuxacademy.com","responseType":"token id_token","scope":"openid email user_impersonation profile","logoutURL":"https:\/\/linuxacademy.com"};
+			var webAuth = new auth0.WebAuth(ssoConfig);
+			
+            $('document').ready(function(){
+
+                // buttons and event listeners
+                var loginBtn = $('.btn-login');
+                var logoutBtn = $('#btn-logout');
+
+                loginBtn.click(function(e) {
+                    e.preventDefault();
+                    webAuth.authorize({});
+                });
+                logoutBtn.click(logout);
+
+
+                if(isAuthenticated()) {
+                    // make a call to serenity to see if serenity knows they are logged in
+                    // if not send the token in for validation, but maybe not auto redirect the user
+                    // instead update login / signup links to show dashboard link
+                    validateToken(localStorage.getItem('access_token'), function(data){
+                        window.location = data.redirect;
+                        // Update the token because roles may have changed in Auth0 - Especially if this is a brand new user account.
+                        checkSession(webAuth, ssoConfig, function(error, authResult) {
+                            if (authResult && authResult.accessToken) {
+                                localStorage.setItem('access_token', authResult.accessToken);
+                            }
+                        });
+                    });
+                } else {
+                    if(window.location.hash != ""){
+                        if(window.location.hash.indexOf('error') !== -1){
+                            window.location = "/cp/login/error" + window.location.hash;
+                        } else {
+                            handleAuthentication(function(authResult){
+                                validateToken(authResult.accessToken, function(data){
+                                    window.location = data.redirect;
+                                });
+                            });
+                        }
+                    } else {
+                        checkSession(webAuth, ssoConfig, function(err, authResult) {
+                            if(err){
+                                console.log(err);
+                                // the user is not logged in prior to this call
+                                // if they need to be logged in prompt for that
+                                // if not do whatever you need to
+                                // ssoConfig.redirectUri = ssoConfig.redirectUri+'/cp/ssologin'; // no longer needed
+                                var ssoAuth = new auth0.WebAuth(ssoConfig);
+                                ssoAuth.authorize();
+                            } else {
+                                console.log(authResult);
+                                // add token data to locaStorage
+                                setSession(authResult);
+                                validateToken(authResult.accessToken, function(data){
+                                    window.location = data.redirect;
+                                });
+                                // do whatever you need .. maybe hide login buttons and replace if that hasn't happened already
+                            }
+                        });
+                    }
+                    // should probably also show a spinner animation if checkSession takes more than a few seconds (which it does if the user does not need to login)
+                    // checkSession will then handle two possibilities
+                    // either set the user as not logged in, or update the token
+                    // the latter should probably repeat what we did for condition isAuthenticated == true
+                }
+            });
+        </script>
+    </body>
+</html>
+   
